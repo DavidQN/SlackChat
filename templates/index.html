@@ -8,6 +8,12 @@
 
 <body>
 
+    <!-- Form to create a display name -->
+    <form id="create_display_name">
+        <input type="text" name="displayname" id="displayname" placeholder="Enter Display Name">
+        <button type="submit">Submit</button>
+    </form>
+
     <!-- Display posts -->
     <div class="message_posts">
         {% for post in user_posts %}

@@ -12,12 +12,22 @@ document.addEventListener("DOMContentLoaded", () => {
   // Establish connection with socket based on my current URL PATH and PORT
   let socket = io.connect("http://" + document.domain + ":" + location.port);
   socket.on("connect", function() {
+    // Create display name
+    document
+      .querySelector("#create_display_name")
+      .addEventListener("submit", event => {
+        event.preventDefault();
+
+        let grab_displayname = document.querySelector("#displayname").value;
+        localStorage.setItem("username", grab_displayname);
+        document.querySelector("#displayname").value = "";
+      });
+
     // Each vote button in votesform should emit a "submit vote" event
     document
       .querySelector("#votesform")
       .querySelectorAll("button")
       .forEach(button => {
-        console.log("helloooo", button);
         button.onclick = btn => {
           // prevent page from reloading
           btn.preventDefault();
@@ -40,6 +50,7 @@ document.addEventListener("DOMContentLoaded", () => {
       let timestamp = create_timestamp();
       let data = {
         post: post,
+        username: localStorage.getItem("username"),
         timestamp: timestamp
       };
       socket.emit("create a new post", data);
@@ -48,8 +59,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Display posts to everyone
   socket.on("add post to app", post => {
+    console.log("post meta data emitted: ", post);
     let div = document.createElement("div");
-    div.innerText = post.post;
+    div.innerText = `${post.username}: ${post.post}`;
 
     // add message to page
     document.querySelector(".message_posts").append(div);
