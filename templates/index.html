@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.6/socket.io.min.js"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='index.js') }}"></script>
+</head>
+
+<body>
+
+    <!-- Display posts -->
+    <div class="message_posts">
+        {% for post in user_posts %}
+        <div>
+            post stuff: {{post.post}}
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- form to create a post -->
+    <form id="postform">
+        <input type="text" name="post" id="post" placeholder="Post messages here">
+        <button type="submit">Post</button>
+    </form>
+
+    <!-- form to vote -->
+    <form id="votesform">
+        <div id="displaymessages"></div>
+        <ul id="votes">
+            <button data-vote='Yes'>Yes</button>
+            <button data-vote='No'>No</button>
+            <button data-vote='Maybe'>Maybe</button>
+        </ul>
+    </form>
+</body>
+
+</html>
