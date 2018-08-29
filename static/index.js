@@ -12,13 +12,22 @@ document.addEventListener("DOMContentLoaded", () => {
   // Establish connection with socket based on my current URL PATH and PORT
   let socket = io.connect("http://" + document.domain + ":" + location.port);
   socket.on("connect", function() {
+    // Don't allow user to create an empty display name
+    document.querySelector("#displayname").onkeyup = () => {
+      if (document.querySelector("#displayname").value.length == 0) {
+        document.querySelector("#create_display_name button").disabled = true;
+      } else {
+        document.querySelector("#create_display_name button").disabled = false;
+      }
+    };
+
     // Create display name
     document
       .querySelector("#create_display_name")
       .addEventListener("submit", event => {
         event.preventDefault();
-
         let grab_displayname = document.querySelector("#displayname").value;
+
         localStorage.setItem("username", grab_displayname);
         document.querySelector("#displayname").value = "";
       });
