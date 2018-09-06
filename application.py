@@ -21,8 +21,6 @@ def hello():
 # Route for adding posts
 @socketio.on("create a new post")
 def user_post(data):
-    # print("grab post data: ", data)
-    # emit("add post to app", data, broadcast=True)
     print("inside post", data)
     user_post = {
         "username": data["username"],

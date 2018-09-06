@@ -35,9 +35,6 @@ let delete_post = post => {
 };
 
 document.addEventListener("DOMContentLoaded", () => {
-  // Establish connection with socket based on my current URL PATH and PORT
-  // let socket = io.connect("http://" + document.domain + ":" + location.port);
-
   socket.on("connect", function() {
     // Don't allow user to create an empty display name
     document.querySelector("#displayname").onkeyup = () => {
