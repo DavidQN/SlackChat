@@ -19,7 +19,7 @@
     <!-- Display posts -->
     <div class="message_posts">
         {% for post in user_posts %}
-        <!-- div allows us to track post by hash -->
+        <!-- div allows us to track post by hashq -->
         <div class="post" data-hash="{{post.hash}}" data-username="{{post.username}}">
             <span class="username">{{post.username}}</span>
             <span class="timestamp">{{post.timestamp}}</span>
