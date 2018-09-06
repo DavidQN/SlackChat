@@ -2,6 +2,8 @@
 <html>
 
 <head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
     <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.6/socket.io.min.js"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='index.js') }}"></script>
 </head>
@@ -23,13 +25,13 @@
         {% endfor %}
     </div>
 
-    <!-- form to create a post -->
+    <!-- Form to create a post -->
     <form id="postform">
         <input type="text" name="post" id="post" placeholder="Post messages here">
         <button type="submit">Post</button>
     </form>
 
-    <!-- form to vote -->
+    <!-- Form to vote -->
     <form id="votesform">
         <div id="displaymessages"></div>
         <ul id="votes">
