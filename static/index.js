@@ -38,10 +38,16 @@ let delete_post = post => {
   socket.emit("delete post", data);
 };
 
+// window.onload = () => {
 document.addEventListener("DOMContentLoaded", () => {
   socket.on("connect", function() {
+    console.log(
+      "check ids",
+      document,
+      document.querySelectorAll("#displayname")
+    );
     // Don't allow user to create an empty display name
-    document.querySelector("#displayname").onkeyup = () => {
+    document.querySelector("#displayname ").onkeyup = () => {
       if (document.querySelector("#displayname").value.length == 0) {
         document.querySelector("#create_display_name button").disabled = true;
       } else {
@@ -165,3 +171,4 @@ document.addEventListener("DOMContentLoaded", () => {
     document.querySelector("#votes").append(li);
   });
 });
+// };
