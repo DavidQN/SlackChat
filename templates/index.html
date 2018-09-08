@@ -12,7 +12,15 @@
 <body>
     <div class="app-layout">
         <!-- Display teams -->
-        <div class="teams box">Teams</div>
+        <div class="teams box">
+            Teams
+
+            <!-- Form to create a display name -->
+            <form id="create_display_name">
+                <input type="text" name="displayname" id="displayname" placeholder="Enter Display Name">
+                <button id="username_btn" type="submit" disabled>Submit</button>
+            </form>
+        </div>
 
         <!-- Channel name header -->
         <div class="header box">Header</div>
@@ -27,28 +35,19 @@
             {% endfor %}
         </div>
 
-        <!-- Form to create a display name -->
-        <form id="create_display_name">
-            <input type="text" name="displayname" id="displayname" placeholder="Enter Display Name">
-            <button id="username_btn" type="submit" disabled>Submit</button>
-        </form>
 
         <!-- Display posts -->
         <div class="messages box">
             <ul class="message_posts">
-                {% for channel, posts_list in user_posts.items() %}
-                <li class="channel_{{channel}}">
-                    {% if user_posts %} {% for post in posts_list %}
-                    <!-- div allows us to track post by hashq -->
-                    <div class="post" data-hash="{{post.hash}}" data-username="{{post.username}}" data-channel="{{post.channel}}">
+                {% for channel, posts_list in user_posts.items() %} {% if user_posts %} {% for post in posts_list %}
+                <!-- div allows us to track post by hashq -->
+                <li class="post" data-hash="{{post.hash}}" data-username="{{post.username}}" data-channel="{{post.channel}}">
 
-                        {{post.post}}
-                        <span class="username">{{post.username}}</span>
-                        <span class="timestamp">{{post.timestamp}}</span>
-                    </div>
-                    {% endfor %} {% endif %}
+                    {{post.post}}
+                    <span class="username">{{post.username}}</span>
+                    <span class="timestamp">{{post.timestamp}}</span>
                 </li>
-                {% endfor %}
+                {% endfor %} {% endif %} {% endfor %}
             </ul>
         </div>
 
@@ -58,15 +57,6 @@
             <button type="submit ">Post</button>
         </form>
 
-        <!-- Form to vote -->
-        <form id="votesform">
-            <div id="displaymessages"></div>
-            <ul id="votes">
-                <button data-vote='Yes'>Yes</button>
-                <button data-vote='No'>No</button>
-                <button data-vote='Maybe'>Maybe</button>
-            </ul>
-        </form>
     </div>
 
 </body>

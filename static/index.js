@@ -4,17 +4,31 @@ let socket = io.connect("http://" + document.domain + ":" + location.port);
 // track channel
 let current_channel = "General";
 
+/*
+* ISSUE:
+*   If the same user spams posts very quickly, it is possible for multiple posts to have the
+*   same hash identifier 
+*
+* Reason:
+*   The hash is created based on the posts' metadata with a timestamp
+*   if the same user creates multiple posts within 1 second, the hash will be the same.
+*   To solve this issue a better hashing method needs to be used here so the hash will ALWAYS be unique  
+*/
+
 // Create unique hash for each post based on username and timestamp
 let post_hash = data => {
-  return btoa(data.post + data.username + data.timestamp);
+  return btoa(data.post + data.username + data.channel + data.timestamp);
 };
 
 // Function to add delete button
 let delete_icon = post => {
   let delete_icon_html = '<i onClick="delete_post(this)" ';
-  delete_icon_html += `data-hash="${post.getAttribute(
-    "data-hash"
-  )}" name="close-circle" class="fa fa-close close"> </i>`;
+  delete_icon_html += `data-hash="${post.getAttribute("data-hash")}" 
+  name="close-circle" 
+  class="fa fa-close close"
+  data-channel="${post.getAttribute("data-channel")}"
+  >
+  </i>`;
   return delete_icon_html;
 };
 
@@ -30,7 +44,7 @@ let create_timestamp = () => {
 
 // helper function to delete posts
 let delete_post = post => {
-  console.log("you hit delete post func");
+  console.log("you hit delete post func", post);
   let data = {
     hash: post.getAttribute("data-hash"),
     channel: post.getAttribute("data-channel")
@@ -66,20 +80,6 @@ document.addEventListener("DOMContentLoaded", () => {
         document.querySelector("#displayname").value = "";
       });
 
-    // Each vote button in votesform should emit a "submit vote" event
-    document
-      .querySelector("#votesform")
-      .querySelectorAll("button")
-      .forEach(button => {
-        button.onclick = btn => {
-          // prevent page from reloading
-          btn.preventDefault();
-          // grab metadata from button and emit
-          const selection = btn.toElement.dataset.vote;
-          socket.emit("submit vote", { selection: selection });
-        };
-      });
-
     // broadcast messages to all users
     document.querySelector("#postform").addEventListener("submit", event => {
       // prevent page from reloading
@@ -111,6 +111,7 @@ document.addEventListener("DOMContentLoaded", () => {
     *   This is because we never reupdate this selector, so we would need to fire this selector 
     *   again after we change the display name, BUT we don't want to reload the page! 
     */
+
     //Puts the delete icon on each post
     document.querySelectorAll(".post").forEach(post => {
       if (
@@ -125,7 +126,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // Display posts to everyone
   socket.on("add post to app", post => {
     console.log("post meta data emitted: ", post);
-    let div = document.createElement("div");
+    let div = document.createElement("li");
 
     div.setAttribute("data-hash", post.hash);
     div.setAttribute("data-username", post.username);
@@ -135,8 +136,8 @@ document.addEventListener("DOMContentLoaded", () => {
     div.classList.add("post");
 
     div.innerHTML =
-      post.post + ' <span class="username">' + post.username + "</span>";
-    div.innerHTML += ' <span class="timestamp">' + post.timestamp + "</span>";
+      post.post + '<span class="username">' + post.username + "</span>";
+    div.innerHTML += '<span class="timestamp">' + post.timestamp + "</span>";
 
     if (post.username == localStorage.getItem("username")) {
       // Hash allows us to delete posts
@@ -163,12 +164,4 @@ document.addEventListener("DOMContentLoaded", () => {
     console.log("going to remove: ", post);
     document.querySelector('.post[data-hash="' + post.hash + '"]').remove();
   });
-
-  // When a new vote is announced, add to the unordered list
-  socket.on("announce vote", data => {
-    const li = document.createElement("li");
-    li.innerHTML = `Vote recorded: ${data.selection}`;
-    document.querySelector("#votes").append(li);
-  });
 });
-// };

@@ -50,11 +50,3 @@ def post(data):
                 # message_list.remove(post)
                 emit("remove post", data, broadcast=True)
                 break
-
-
-# Create votes
-@socketio.on("submit vote")
-def vote(data):
-    print("data from vote:", data)
-    selection = data["selection"]
-    emit("announce vote", {"selection": selection}, broadcast=True)
