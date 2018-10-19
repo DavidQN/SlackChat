@@ -1,92 +1,204 @@
-*,
-*:before,
-*:after {
-  box-sizing: border-box;
+/* Reset padding and margin */
+html {
+  margin: 0 !important;
+  padding: 0 !important;
 }
 
 body {
-  margin: 0;
-  font-family: Arial;
-  background-color: #f2f2f2;
+  margin: 0 !important;
+  padding: 0 !important;
+  height: 100vh !important;
+  background-color: #3e313c;
 }
 
-.box {
-  color: #fff;
-  padding: 1em;
-  text-align: center;
+/* Override bootstrap container height */
+.container {
+  height: 100vh !important;
 }
 
-input {
-  width: 100%;
-  padding: 1em;
-  outline: none;
-  border: 1px solid #f2f2f2;
+/* Override bootstrap row height to avoid scroll bar on mobile devices */
+.row {
+  height: 99% !important;
 }
 
-.message_posts {
-  margin: 0;
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: "Playfair Display", serif;
+}
+
+p {
+  font-family: "Inconsolata", monospace;
+}
+
+#header {
+  background-color: #cc8c94; /* Puce */
+  margin-top: 5vh;
+  height: 18vh;
+  padding: 4vh;
+}
+
+#sidebar {
+  background-color: #4d394b;
   padding: 0;
 }
-
-.message_posts li {
-  padding: 0.2em;
-  margin-top: 1em;
-  margin-bottom: 1em;
-  background-color: #f2f2f2;
-  color: black;
-  list-style: none;
+#channel_form {
+  text-align: center;
+  height: 7vh;
+  display: flex;
+  padding: 1vh;
 }
-
-/* Our Grid Code */
-
-.app-layout {
-  display: grid;
-  height: 100vh;
-  grid-template-columns: 100px 250px 1fr;
-  grid-template-rows: auto 1fr auto;
+#make_channel {
+  margin-top: 3px;
 }
-
-.header {
-  background-color: #ffffff;
+#nav_title {
+  color: grey;
+  font-weight: 600;
+  font-size: 2.5vh;
+  height: 6vh;
+  padding: 1vh;
 }
-.teams {
-  background-color: #362233;
-}
-.channels {
-  background-color: #52364e;
-}
-.messages {
-  background-color: #ffffff;
-}
-.write {
-  background-color: #f2f2f2;
-}
-
-.teams {
-  grid-column: 1;
-  grid-row: 1 / 4;
-}
-
-.channels {
-  grid-column: 2;
-  grid-row: 1 / 4;
-}
-
-.header {
-  grid-column: 3;
-  grid-row: 1;
-  color: #333;
-  border-bottom: 1px solid #f2f2f2;
-}
-
-.messages {
-  grid-column: 3;
-  grid-row: 2;
-  padding: 0 1em;
+#channel_list {
+  color: grey;
   overflow-y: scroll;
+  overflow-x: hidden;
+  width: inherit;
+  margin: 0;
+}
+#channel_list li {
+  padding: 4px;
+  list-style-type: none;
+}
+#channel_list a:hover,
+#channel_list a:active {
+  color: white;
 }
 
-.input {
-  grid-column: 3;
-  grid-row: 3;
+#channel {
+  background-color: white;
+  padding: 0px;
+  position: relative;
 }
+#channel_title {
+  text-align: center;
+  height: 6vh;
+  font-size: 5vh;
+}
+#message_input {
+  position: absolute;
+  width: inherit;
+  height: 5vh;
+  bottom: 0;
+}
+
+/* Messages div */
+#message_div {
+  overflow-y: scroll;
+  overflow-x: hidden;
+  height: 65vh;
+  width: inherit;
+}
+/* Messages */
+#channel_messages li {
+  display: inline-block;
+  width: calc(100% - 5px);
+  list-style-type: none;
+  animation-name: hide;
+  animation-duration: 1s;
+  animation-fill-mode: forwards;
+  animation-play-state: paused;
+}
+#channel_messages .sent p {
+  float: right;
+  background-color: skyblue;
+}
+#channel_messages .reply p {
+  float: left;
+  background-color: whitesmoke;
+}
+#channel_messages .admin p {
+  float: left;
+  background-color: lightgrey;
+  color: black;
+}
+#channel_messages li p {
+  padding: 10px 20px 10px 20px;
+  border-radius: 5px;
+  margin-bottom: 0rem;
+}
+
+/* Tooltip */
+.tooltip-inner {
+  background-color: #9e656b; /* Copper Rose */
+  border: 2px solid black;
+  padding: 10px;
+  font-family: "Arial", sans-serif;
+  font-size: 125%;
+}
+
+#username_validation {
+  color: red;
+  font-weight: 600;
+}
+
+/* Font awesome icons */
+.fas {
+  color: white;
+}
+.fa-times-circle {
+  padding-left: 15px;
+}
+.fa-volume-up,
+.fa-volume-off {
+  position: fixed;
+  top: 15px;
+  left: 15px;
+}
+
+::selection {
+  color: white;
+  background-color: black;
+}
+
+/* https://gist.github.com/webprogramozo/9684826e469e5dc375e98f65559e1509 */
+.modal-open > :not(.modal) {
+  -webkit-filter: blur(3px);
+  -moz-filter: blur(3px);
+  -o-filter: blur(3px);
+  -ms-filter: blur(3px);
+  filter: blur(3px);
+}
+
+/* Animation to hide deleted message */
+@keyframes hide {
+  0% {
+    opacity: 1;
+    height: 100%;
+  }
+  50% {
+    opacity: 0;
+    height: 100%;
+  }
+  100% {
+    opacity: 0;
+    height: 0px;
+  }
+}
+
+/* Collapse channel list on small screen */
+@media (min-width: 768px) {
+  #channel_list {
+    height: 54vh;
+  }
+}
+@media (max-width: 767px) {
+  #channel_list {
+    height: 40px;
+  }
+}
+
+/* Font */
+@import url("https://fonts.googleapis.com/css?family=Noto+Sans|Playfair+Display:900");

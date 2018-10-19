@@ -1,64 +1,120 @@
 <!DOCTYPE html>
-<html>
+
+<html lang="en">
 
 <head>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.6/socket.io.min.js"></script>
-    <script type="text/javascript" defer src="{{ url_for( 'static', filename='index.js' ) }}"></script>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB"
+        crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js" integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T"
+        crossorigin="anonymous"></script>
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.1.1/css/all.css" integrity="sha384-O8whS3fhG2OnA5Kas0Y9l3cfpmYjapjI0E4theH4iuMD+pLhbf6JI0jIMfYcK3yZ"
+        crossorigin="anonymous">
+
+    <!-- My CSS -->
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+
+    <!-- Socket -->
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.6/socket.io.min.js"></script>
+
+    <!-- My JavaScript -->
+    <script src="{{ url_for('static', filename='JS/main.js') }}"></script>
+    <script src="{{ url_for('static', filename='JS/channel.js') }}"></script>
+    <script src="{{ url_for('static', filename='JS/message.js') }}"></script>
+    <script src="{{ url_for('static', filename='JS/username.js') }}"></script>
 </head>
 
 <body>
-    <div class="app-layout">
-        <!-- Display teams -->
-        <div class="teams box">
-            Teams
-
-            <!-- Form to create a display name -->
-            <form id="create_display_name">
-                <input type="text" name="displayname" id="displayname" placeholder="Enter Display Name">
-                <button id="username_btn" type="submit" disabled>Submit</button>
-            </form>
-        </div>
-
-        <!-- Channel name header -->
-        <div class="header box">Header</div>
-
-
-        <!-- Display channels -->
-        <div class="channels box">
-            Channels {% for channel in user_posts.keys() %}
-            <div>
-                {{channel}}
+    <!-- Ask username modal -->
+    <div class="modal fade" id="username_modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Please choose a username.</h5>
+                </div>
+                <form action="#" onsubmit="save_username(); return false">
+                    <div class="modal-body">
+                        <input autocomplete="off" name="username" id="username" type="text" />
+                        <small id="username_help" class="form-text text-muted">
+                            Other users will be able to see this name.
+                        </small>
+                        <p id="username_validation" class="validation_message"></p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-secondary"><i class="fas fa-sign-in-alt"></i></button>
+                    </div>
+                </form>
             </div>
-            {% endfor %}
         </div>
-
-
-        <!-- Display posts -->
-        <div class="messages box">
-            <ul class="message_posts">
-                {% for channel, posts_list in user_posts.items() %} {% if user_posts %} {% for post in posts_list %}
-                <!-- div allows us to track post by hashq -->
-                <li class="post" data-hash="{{post.hash}}" data-username="{{post.username}}" data-channel="{{post.channel}}">
-
-                    {{post.post}}
-                    <span class="username">{{post.username}}</span>
-                    <span class="timestamp">{{post.timestamp}}</span>
-                </li>
-                {% endfor %} {% endif %} {% endfor %}
-            </ul>
-        </div>
-
-        <!-- Form to create a post -->
-        <form id="postform" class="input box">
-            <input type="text" name="post" id="post" placeholder="Post messages here">
-            <button type="submit ">Post</button>
-        </form>
-
     </div>
 
+    <!-- Audio toggle -->
+    <i class="fas fa-volume-up fa-2x" id="audio_toggle" style="color:black "></i>
+
+    <div class="container">
+
+        <div class="row">
+
+            <!-- Sidebar for channel list -->
+            <div class="col-md-3" id="sidebar">
+
+                <!-- Form to create channel -->
+                <form action="#" onsubmit="create_channel(); return false;" id="channel_form">
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" id="basic-addon1">#</span>
+                        </div>
+                        <input data-toggle="tooltip" autocomplete="off" class="form-control" id="channel_name" type="text"
+                            placeholder="Channel name">
+                    </div>
+                    <button type="submit" class="btn btn-secondary" id="make_channel"><i class="fa fa-plus"></i></button>
+                </form>
+
+                <!-- List of existing channels -->
+                <div id="class_navigation">
+                    <div>
+                        <h4 id="nav_title">Channels:</h4>
+                    </div>
+                    <ul id="channel_list">
+                        {% for channel in channel_list %}
+                        <li><a class="channel_menu" onclick="join_channel()" data-channel="{{ channel }}">#{{ channel
+                                }}</a></li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Channel messages-->
+            <div class="col-md-9" id="channel">
+                <h3 id="channel_title">Click one of the existing channels</br>or create a new channel to start
+                    conversing</h3>
+                <div id="message_div">
+                    <ul id="channel_messages">
+                    </ul>
+                </div>
+
+                <!-- Message input -->
+                <div id="message_input" style="display: none">
+                    <form action="#" onsubmit="send_message(); return false" class="ml-auto input-group">
+                        <input data-toggle="tooltip" autocomplete="off" class="form-control" id="message" type="text"
+                            placeholder="Message">
+                        <div class="input-group-append">
+                            <button class="btn btn-secondary" type="submit"><i class="fas fa-comment"></i></button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 
 </html>
